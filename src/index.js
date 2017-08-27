@@ -95,7 +95,7 @@ function bindFunction(fn) {
         return 0;
     }
 
-    return fn;
+    return fn; 
 }
 
 export {
