@@ -1,4 +1,4 @@
-import { assert } from 'chai';
+/*import { assert } from 'chai';
 import { randomValue as random, randomStringArray } from '../helper';
 import {
     bindFunction,
@@ -112,3 +112,4 @@ describe('ДЗ 1 - функции', () => {
         });
     });
 });
+*/

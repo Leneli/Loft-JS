@@ -1,108 +1,60 @@
-/* ДЗ 1 - Функции */
+/* ДЗ 6.1 - Асинхронность и работа с сетью */
 
-/*
- Задание 1:
-
- Функция должна принимать один аргумент и возвращать его
+/**
+ * Функция должна создавать Promise, который должен быть resolved через seconds секунду после создания
+ *
+ * @param {number} seconds - количество секунд, через которое Promise должен быть resolved
+ * @return {Promise}
  */
-function returnFirstArgument(arg) {
-    return arg;
+function delayPromise(seconds) {
+
+    return new Promise(function(resolve) {
+        setTimeout(function() {
+            return resolve();
+        }, seconds * 1000);
+    })
 }
 
-/*
- Задание 2:
-
- Функция должна принимать два аргумента и возвращать сумму переданных значений
- Значение по умолчанию второго аргумента должно быть 100
+/**
+ * Функция должна вернуть Promise, который должен быть разрешен массивом городов, загруженным из
+ * https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json
+ * Элементы полученного массива должны быть отсортированы по имени города
+ *
+ * @return {Promise<Array<{name: String}>>}
  */
-function defaultParameterValue(a, b) {
-    var d = b || 100;
+function loadAndSortTowns() {
+    
+    return new Promise(function (resolve, reject) {
+        var url = 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json';
+        var xhr = new XMLHttpRequest();
+        
+        xhr.open('GET', url);
+        xhr.addEventListener('load', function () {
+            var cities = JSON.parse(xhr.responseText);
 
-    return a + d;
-}
+            function compare(a, b, i) {
+                i = i || 0;
 
-/*
- Задание 3:
+                if (a.name.charAt(i) < b.name.charAt(i)) {
+                    return -1;
+                } else if (a.name.charAt(i) > b.name.charAt(i)) {
+                    return 1;
+                }
 
- Функция должна возвращать все переданные в нее аргументы в виде массива
- Количество переданных аргументов заранее неизвестно
- */
-function returnArgumentsArray() {
-    return [...arguments];
-}
-
-/*
- Задание 4:
-
- Функция должна принимать другую функцию и возвращать результат вызова переданной функции
- */
-function returnFnResult(fn) {
-    return fn();
-}
-
-/*
- Задание 5:
-
- Функция должна принимать число (значение по умолчанию - 0) и возвращать функцию (F)
- При вызове F, переданное число должно быть увеличено на единицу и возвращено из F
- */
-var numbers = [];
-var counts = [];
-
-function returnCounter(number) {
-    number = number || 0;
-
-    function F() {
-        var i;
-        var flag = false;
-
-        for (let j = 0; j < numbers.length; j++) {
-            if (numbers[j] === number) {
-                flag = true;
-                i = j;
-                break;
+                return compare(a, b, ++i);
             }
-        }
+            resolve(cities.sort(compare));
+        });
 
-        if (!flag) {
-            numbers.push(number);
-            counts.push(0);
-            i = counts.length - 1;
-        }
+        xhr.addEventListener('error', function() {
+            reject(error);
+        });
 
-        counts[i]++;
-        number += counts[i];
-
-        return number;
-    }
-
-    return F;
-}
-
-/*
- Задание 6 *:
-
- Функция должна принимать другую функцию (F) и некоторое количество дополнительных аргументов
- Функция должна привязать переданные аргументы к функции F и вернуть получившуюся функцию
- */
-function bindFunction(fn) {
-
-    if (typeof fn == 'function') {
-        for (let i = 1; i < arguments.length; i++) {
-            fn = fn.bind(null, arguments[i]);
-        }
-    } else {
-        return 0;
-    }
-
-    return fn; 
+        xhr.send();
+    });
 }
 
 export {
-    returnFirstArgument,
-    defaultParameterValue,
-    returnArgumentsArray,
-    returnFnResult,
-    returnCounter,
-    bindFunction
-}
+    delayPromise,
+    loadAndSortTowns
+};
