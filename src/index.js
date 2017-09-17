@@ -1,60 +1,50 @@
-/* ДЗ 6.1 - Асинхронность и работа с сетью */
+/* ДЗ 7.1 - BOM */
 
 /**
- * Функция должна создавать Promise, который должен быть resolved через seconds секунду после создания
+ * Функция должна создавать окно с указанным именем и размерами
  *
- * @param {number} seconds - количество секунд, через которое Promise должен быть resolved
- * @return {Promise}
+ * @param {number} name - имя окна
+ * @param {number} width - ширина окна
+ * @param {number} height - высота окна
+ * @return {Window}
  */
-function delayPromise(seconds) {
-
-    return new Promise(function(resolve) {
-        setTimeout(function() {
-            return resolve();
-        }, seconds * 1000);
-    })
+function createWindow(name, width, height) {
+	return window.open('', name, '"width = " + width + ", height = " + height');
 }
 
 /**
- * Функция должна вернуть Promise, который должен быть разрешен массивом городов, загруженным из
- * https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json
- * Элементы полученного массива должны быть отсортированы по имени города
+ * Функция должна закрывать указанное окно
  *
- * @return {Promise<Array<{name: String}>>}
+ * @param {Window} window - окно, размер которого надо изменить
  */
-function loadAndSortTowns() {
-    
-    return new Promise(function (resolve, reject) {
-        var url = 'https://raw.githubusercontent.com/smelukov/citiesTest/master/cities.json';
-        var xhr = new XMLHttpRequest();
-        
-        xhr.open('GET', url);
-        xhr.addEventListener('load', function () {
-            var cities = JSON.parse(xhr.responseText);
+function closeWindow(window) {
+	window.close();
+}
 
-            function compare(a, b, i) {
-                i = i || 0;
+/**
+ * Функция должна создавать cookie с указанными именем и значением
+ *
+ * @param name - имя
+ * @param value - значение
+ */
+function createCookie(name, value) {
+	document.cookie = name + ' = ' + value;
+}
 
-                if (a.name.charAt(i) < b.name.charAt(i)) {
-                    return -1;
-                } else if (a.name.charAt(i) > b.name.charAt(i)) {
-                    return 1;
-                }
+/**
+ * Функция должна удалять cookie с указанным именем
+ *
+ * @param name - имя
+ */
+function deleteCookie(name) {
+	var startDate = new Date(0);
 
-                return compare(a, b, ++i);
-            }
-            resolve(cities.sort(compare));
-        });
-
-        xhr.addEventListener('error', function() {
-            reject(error);
-        });
-
-        xhr.send();
-    });
+	document.cookie = name + '=; ' + 'expires = ' + startDate;
 }
 
 export {
-    delayPromise,
-    loadAndSortTowns
+    createWindow,
+    closeWindow,
+    createCookie,
+    deleteCookie
 };
